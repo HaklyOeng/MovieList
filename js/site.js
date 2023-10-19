@@ -21,7 +21,7 @@ async function getMovie(movieId) {
 
     try {
 
-        let response = await fetch(`https://api.themoviedb.org/3/movie/${movieI}`, {
+        let response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}`, {
             headers: {
                 'Authorization': `Bearer ${API_KEY}`
             }
