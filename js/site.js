@@ -21,7 +21,7 @@ async function getMovie(movieId) {
 
     try {
 
-        let response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}`, {
+        let response = await fetch(`https://api.themoviedb.org/3/movie/${movieI}`, {
             headers: {
                 'Authorization': `Bearer ${API_KEY}`
             }
@@ -83,23 +83,21 @@ async function showMovieDetails(clickedBtn) {
     let modalImg = document.querySelector('.img')
     modalImg.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
 
-    let genresResults = '';
-    for (i = 0; i < movie.genres.length; i++) {
-        let result = movie.genres[i].name;
-        genresResults += `${result}; `
-    };
+    let genresResults = '';    
+    for (i = 0;i < movie.genres.length;i++) {
+        let result = movie.genres[i].name;       
+        genresResults += `${result}; `;      
+    }
     let companys = '';
-    for (c = 0; c < movie.production_companies.length; c++,) {
+    for (c = 0; c < movie.production_companies.length; c++) {
         let comName = movie.production_companies[c].name;
         companys += `${comName}; `;
     }
-    let languages = ''
+    let languages = '';
     for (l = 0; l < movie.spoken_languages.length; l++) {
         let langName = movie.spoken_languages[l].name;
         languages += `${langName}; `;
-
     }
-
 
     let genres = document.querySelector('.col-7 > p')
     genres.textContent = genresResults;
