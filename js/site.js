@@ -17,11 +17,11 @@ async function getMovies() {    // await is use with async function
         console.error(error);
     }
 }
-async function getMovie(Id) {
+async function getMovie(movieId) {
 
     try {
 
-        let response = await fetch(`https://api.themoviedb.org/3/movie/${Id}`, {
+        let response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}`, {
             headers: {
                 'Authorization': `Bearer ${API_KEY}`
             }
@@ -84,21 +84,22 @@ async function showMovieDetails(clickedBtn) {
     modalImg.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
 
     let genresResults = '';
-    let companys = '';
-    let languages = ''
-    for (i = 0, c = 0, l = 0; // loop for array in object
-        i < movie.genres.length,
-        c < movie.production_companies.length,
-        l < movie.spoken_languages.length;
-        i++, c++, l++) {
-
+    for (i = 0; i < movie.genres.length; i++) {
         let result = movie.genres[i].name;
+        genresResults += `${result}; `
+    };
+    let companys = '';
+    for (c = 0; c < movie.production_companies.length; c++,) {
         let comName = movie.production_companies[c].name;
-        let langName = movie.spoken_languages[l].name;
-        genresResults += `${result}; `;
         companys += `${comName}; `;
-        languages += `${langName}; `;
     }
+    let languages = ''
+    for (l = 0; l < movie.spoken_languages.length; l++) {
+        let langName = movie.spoken_languages[l].name;
+        languages += `${langName}; `;
+
+    }
+
 
     let genres = document.querySelector('.col-7 > p')
     genres.textContent = genresResults;
