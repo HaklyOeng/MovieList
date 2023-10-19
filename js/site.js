@@ -86,7 +86,7 @@ async function showMovieDetails(clickedBtn) {
     let genresResults = '';
     let companys = '';
     let languages = ''
-    for (i = 0, c = 0, l = 0;
+    for (i = 0, c = 0, l = 0; // loop for array in object
         i < movie.genres.length,
         c < movie.production_companies.length,
         l < movie.spoken_languages.length;
