@@ -22,7 +22,7 @@
     <link rel="shortcut icon" href="/img/Logo to use/Black favicon/favicon ligth.ico" type="image/x-icon" />
 </head>
 
-<body>
+<body onload="displayMovies()">
 
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
@@ -70,8 +70,9 @@
 
     <main class="container-xl py-3 ">
         <h1 class="display-3 text-center my-3">Popular Movie</h1>
-        <button class="btn btn-primary" onclick="displayMovies()">Get Movies</button>
-        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-3 justify-content-evenly " id="movie-list">
+        <button class="btn btn-primary" onclick="getMovie()">Get Movies</button>
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-3 justify-content-evenly "
+            id="movie-list">
             <!--Movie Cards goes here-->
         </div>
     </main>
@@ -95,7 +96,7 @@
 
     </footer>
 
-    <template id="movie-card-template">
+    <template id="movie-card-template"> <!-- template doesn't appear on html it exist in the dom -->
         <div class="col">
             <div class="card h-100">
                 <img src="https://image.tmdb.org/t/p/w500/b0Ej6fnXAP8fK75hlyi2jKqdhHz.jpg" class="card-img-top"
@@ -109,13 +110,48 @@
                     </p>
                 </div>
                 <div class="card-footer text-end">
-                    <button class="btn btn-primary">
+                    <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#movieModal"
+                        onclick="showMovieDetails(this)">
                         More Info
                     </button>
                 </div>
-            </div>                
+            </div>
         </div>
     </template>
+
+    <!--Modal-->
+    <div class="modal fade" id="movieModal" tabindex="-1" aria-labelledby="movieModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fw-bold display-6" id="movieModalLabel">Modal title</h1>
+                </div>
+                <div class="modal-body container-fluid">
+                    <div class="row">
+                        <div class="col-5">
+                            <img src="#" class="img" alt="movie_poster">
+                            <p class="lead text-center" id="tagline"></p>
+                            <h6 class="text-center"></h6>
+                        </div>
+                        <div class="col-7">
+                            <h4>Genres:</h4>
+                            <p></p>
+                            <h4>Overview:</h4>
+                            <p id="overview"></p>
+                            <h4>Production:</h4>
+                            <p id="companyName"></p>
+                            <h4>Languages:</h4>
+                            <p id="language"></p>
+
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
     <!-- BootStrap Java -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
@@ -124,14 +160,7 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!--Custom JS -->
     <script src="/js/site.js"></script>
-    <script>
-        // get the button on the page and assign it to a variable
-        let button = document.getElementById('btnSubmit');
 
-        // tell the button to run our displayMessage when clicked
-        button.addEventListener('click', displayMessage);
-
-    </script>
 </body>
 
 </html>
