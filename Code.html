@@ -21,7 +21,7 @@
     <link rel="stylesheet" href="/css/site.css" />
 
     <!--favicon-->
-    <link rel="shortcut icon" href="/img/Logo to use/Black favicon/favicon ligth.ico" type="image/x-icon" />
+    <link rel="shortcut icon" href="/img/Logo to use/Black_Favicon/favicon.ico" type="image/x-icon" />
 </head>
 
 <body>
@@ -29,7 +29,7 @@
     <nav class="navbar navbar-expand-lg navbar-dark">
         <div class="container-fluid">
             <a class="navbar-brand" href="index.html">
-                <img src="/img/Logo to use/light_initial.svg" height="35" />
+                <img src="/img/Logo to use/White_Logo.svg" height="35" />
                 MovieList
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
@@ -76,27 +76,149 @@
             <div class="col-12 col-lg-8">
                 <pre class="line-numbers">
                     <code class="language-js">
-function displayMessage() {
-    // get the text out of our input and assign it to a variable 
-    let msg = document.getElementById('message').value;
-
-    Swal.fire(
-        {
-            backdrop: false,
-            title: 'MovieList',
-            text: msg,  // <-- replace this text with that variable
-         }
-    );    
-}
+                        const API_KEY = "eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJkYzAyY2NiZDYyMjZmYjYzN2IzMGRlN2JjMGIzY2I0ZiIsInN1YiI6IjY1MmVlMTk5YTgwMjM2MDBjMzE1ZWM3MSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.b_n-lsm96wjN84W2o6Oy1c7JJmPHBxwPL_1nMciaQOE";
+                        async function getMovies() 
+                        {    
+                            // await is use with async function
+                            try {
+                        
+                                let response = await fetch('https://api.themoviedb.org/3/movie/popular', { // fetch = java collect data from over the web
+                                    headers: {
+                                        'Authorization': `Bearer ${API_KEY}`
+                                    }
+                                });
+                        
+                                let data = await response.json(); // tranform data into json file
+                                return data;
+                        
+                            } catch (error) { // to check if there any problem with try
+                                Swal.fire({
+                                    backdrop: false,
+                                    title: 'Oops!',
+                                    text: 'Something went wrong reaching the TMDB API',
+                                    icon: 'error'
+                                })
+                            }                                                    
+                        }
+                        async function getMovie(movieId) 
+                        {                        
+                            try {                        
+                                let response = await fetch(`https://api.themoviedb.org/3/movie/${movieId}`, {
+                                    headers: {
+                                        'Authorization': `Bearer ${API_KEY}`
+                                    }
+                                });
+                        
+                                let data = await response.json();
+                                return data;
+                            } 
+                            catch (error) {
+                                Swal.fire({
+                                    backdrop: false,
+                                    title: 'Oops!',
+                                    text: 'Something went wrong reaching the TMDB API',
+                                    icon: 'error'
+                                })
+                            }
+                        }
+                        async function displayMovies() {                        
+                            let data = await getMovies();                        
+                            const movieListDiv = document.getElementById('movie-list');
+                            movieListDiv.innerHTML = '';
+                            const moviePosterTemplate = document.getElementById('movie-card-template');                        
+                            let movies = data.results; // name a var that equal to array for easy access to data
+                        
+                            for (i = 0; i < movies.length; i++) {
+                        
+                                let movie = movies[i];
+                        
+                                let movieCard = moviePosterTemplate.content.cloneNode(true); // clone a template
+                        
+                                let movieImgElement = movieCard.querySelector('.card-img-top'); // access a specifice elements in template
+                                movieImgElement.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`; // replace value with the retrive value
+                        
+                                let movieTitleElement = movieCard.querySelector('.card-body > h5');
+                                movieTitleElement.textContent = movie.title;
+                        
+                                let movieParagraphElement = movieCard.querySelector('.card-text');
+                                movieParagraphElement.textContent = movie.overview;
+                        
+                                let movieButton = movieCard.querySelector('.btn-primary');
+                                movieButton.setAttribute('data-movieId', movie.id);
+                                movieListDiv.appendChild(movieCard); 
+                                // add element to cloned template
+                            }
+                        
+                        }
+                        
+                        
+                        async function showMovieDetails(clickedBtn) {
+                        
+                            // get the id of the movie that was click
+                            let movieId = clickedBtn.getAttribute('data-movieId');
+                            // get the details of the movie with that ID from TMDB API
+                            let movie = await getMovie(movieId);
+                        
+                            let modalTitle = document.querySelector('.modal-header > h1');
+                            modalTitle.textContent = movie.title;
+                        
+                            let modalImg = document.querySelector('.img')
+                            modalImg.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
+                        
+                            let genresResults = '';
+                            for (i = 0; i < movie.genres.length; i++) {
+                                let result = movie.genres[i].name;
+                                genresResults += `${result}; `;
+                            }
+                            let companys = '';
+                            for (c = 0; c < movie.production_companies.length; c++) {
+                                let comName = movie.production_companies[c].name;
+                                companys += `${comName}; `;
+                            }
+                            let languages = '';
+                            for (l = 0; l < movie.spoken_languages.length; l++) {
+                                let langName = movie.spoken_languages[l].name;
+                                languages += `${langName}; `;
+                            }
+                        
+                            let genres = document.querySelector('.col-7 > p')
+                            genres.textContent = genresResults;
+                            let tagline = document.querySelector('#tagline')
+                            tagline.textContent = movie.tagline;
+                            let releaseDate = document.querySelector('.col-5 > h6')
+                            releaseDate.textContent = `Release Date: ${movie.release_date}`;
+                            let overview = document.querySelector('#overview')
+                            overview.textContent = movie.overview;
+                        
+                            let companyName = document.querySelector('#companyName');
+                            companyName.textContent = companys;
+                            let language = document.querySelector('#language');
+                            language.textContent = languages;
+                            // put those details into my modal
+                        }
                     </code>
                 </pre>
             </div>
             <div class="col-12 col-lg-4">
                 <!-- Explain your code here! -->
-                <p>The code is structured in one function</p>
+                <p class="lead fs-4">The code is in two different section:</p>
+                <p class="fs-5 fw-bold lead">The first section: </p>
                 <p>
-                    <code>displayMessage</code>displays a SweetAlert when the button is pressed.
+                    <code>async function getMovies()</code> reach out to themoviedb.org to get a list of popular movie data and convert it to json.                    
                 </p>
+                <p>
+                    <code>async function getMovie(movieId)</code> reach out to themoviedb.org to get a movie data base on it ID and convert it to json.
+                </p>
+                <p class="fs-5 fw-bold lead">The second section: </p>
+                <P>
+                    <code>async function displayMovies()</code> get the HTML element that need to be populate with data that fatched from the api.                    
+                </P>
+                <p>
+                    <code>async function showMovieDetails(clickedBtn)</code> listen for the event on clicked to get the ID of the movie,
+                     with movie ID reach out to themoviedb.org to get the movie detail and populate the modal template with the data.
+                </p>
+                
+                
             </div>
         </div>
 
@@ -109,12 +231,12 @@ function displayMessage() {
                     &copy; 2023 Hakly Oeng
                 </div>
                 <div class="col text-lg-center">
-                    <img src="/img/Logo to use/light_name.png" height="30" />
+                    <img src="/img/Logo to use/White_Name.svg" height="30" />
                 </div>
                 <div class="col text-lg-end">
-                    <a href="#"><i class="bi bi-linkedin"></i></a>
-                    <a href="https://github.com/HaklyOeng"><i class="bi bi-github"></i></a>
-                    <a href="#"><i class="bi bi-envelope-at"></i></a>
+                    <a href="https://www.linkedin.com/in/hakly-oeng-b9a9722a1/"><i class="bi bi-linkedin"></i></a>
+                    <a href="https://github.com/HaklyOeng/Mortgage-Calculator"><i class="bi bi-github"></i></a>
+                    <a href="mailto:helihaung@gmail.com" target="_blank"><i class="bi bi-envelope-at"></i></a>
                 </div>
             </div>
         </div>

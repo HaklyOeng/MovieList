@@ -13,9 +13,15 @@ async function getMovies() {    // await is use with async function
         let data = await response.json(); // tranform data into json file
         return data;
 
-    } catch (error) {  // to check if there any problem with try
-        console.error(error);
+    } catch (error) { // to check if there any problem with try
+        Swal.fire({
+            backdrop: false,
+            title: 'Oops!',
+            text: 'Something went wrong reaching the TMDB API',
+            icon: 'error'
+        })
     }
+
 }
 async function getMovie(movieId) {
 
@@ -31,15 +37,20 @@ async function getMovie(movieId) {
         return data;
 
     } catch (error) {
-        console.error(error);
+        Swal.fire({
+            backdrop: false,
+            title: 'Oops!',
+            text: 'Something went wrong reaching the TMDB API',
+            icon: 'error'
+        })
     }
 }
-
 async function displayMovies() {
 
     let data = await getMovies();
 
     const movieListDiv = document.getElementById('movie-list');
+    movieListDiv.innerHTML = '';
     const moviePosterTemplate = document.getElementById('movie-card-template');
 
     let movies = data.results; // name a var that equal to array for easy access to data
@@ -61,9 +72,6 @@ async function displayMovies() {
 
         let movieButton = movieCard.querySelector('.btn-primary');
         movieButton.setAttribute('data-movieId', movie.id);
-
-
-
         movieListDiv.appendChild(movieCard); // add element to cloned template
     }
 
@@ -83,10 +91,10 @@ async function showMovieDetails(clickedBtn) {
     let modalImg = document.querySelector('.img')
     modalImg.src = `https://image.tmdb.org/t/p/w500${movie.poster_path}`;
 
-    let genresResults = '';    
-    for (i = 0;i < movie.genres.length;i++) {
-        let result = movie.genres[i].name;       
-        genresResults += `${result}; `;      
+    let genresResults = '';
+    for (i = 0; i < movie.genres.length; i++) {
+        let result = movie.genres[i].name;
+        genresResults += `${result}; `;
     }
     let companys = '';
     for (c = 0; c < movie.production_companies.length; c++) {
@@ -112,9 +120,5 @@ async function showMovieDetails(clickedBtn) {
     companyName.textContent = companys;
     let language = document.querySelector('#language');
     language.textContent = languages;
-
-
-
-
     // put those details into my modal
 }
